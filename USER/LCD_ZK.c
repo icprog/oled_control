@@ -451,7 +451,7 @@ void display_graphic_8x16(uint page,uchar column,uchar *dp)
 /*******************功能描述：显示8*16一组标准ASCII字符串     显示的坐标（x,y），y为页范围0～7****************/
 void LCD_P8x16Showchar(unsigned char x, unsigned char y,unsigned char dat)
 {
-    unsigned char c=0,i=0,j=0;    
+    unsigned char c=0,i=0;    
         c =dat-32;
         if(x>120){x=0;y++;}
         lcd_address(x,y);    
@@ -572,7 +572,7 @@ void display_GB2312_string(uchar y,uchar x,uchar *text)
 {
 	uchar i= 0;
 	uchar addrHigh,addrMid,addrLow ;
-	uchar fontbuf[32];			
+	uchar fontbuf[32];	
 	while((text[i]>0x00))
 	{
 		if(((text[i]>=0xb0) &&(text[i]<=0xf7))&&(text[i+1]>=0xa1))

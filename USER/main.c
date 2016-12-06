@@ -25,6 +25,7 @@ int main(void)
 		clear_screen();    //clear all dots 
 		display_128x64(bmp1);
 		clear_screen();    //clear all dots 
+		display_GB2312_string(0,0,"ฮารว");
 		delay_ms(100);
     while(1){
 			Execute_Host_Comm();

@@ -119,7 +119,52 @@ static  void func02(u8 x,u8 y,u8 length,u8 *text)
 		x+=16;
 	}
 }
-
+//主机发送数据必须使用A3+"字符"处理模式
+static  void func03(u8 x,u8 y,u8 length,u8 *text)
+{
+		uchar i,tempx,tempy,templength;
+		uchar addrHigh,addrMid,addrLow ;
+		uchar fontbuf[32];
+	  u8 texttemp[16];
+		ulong  fontaddr=0;
+		tempy = y;
+		templength = 0;
+		length = length*2;
+		if(x+length*8 > 128)
+		{
+			tempx =length*8 + x -128 ;
+			templength = tempx/8;
+			if(tempx%8 != 0){
+				templength++;
+			}
+			if(templength %2 != 0){
+				templength++;	//文字是16个字符，减去的长度要是2的倍数
+			}
+			tempy += 2;
+		}
+		for(i=0;i<length*2;i++)
+		{
+				texttemp[i*2] = 0xA3;
+				texttemp[i*2+1] = text[i]- 0x20 + 0xA0;
+		}
+		for(i=0;i<(length - templength)/2;i=i+2){
+			/*国标简体（GB2312）15x16点的字符在晶联讯字库IC中的地址由以下公式来计算：*/
+			/*Address = ((MSB - 0xa1) * 94 + (LSB - 0xA1))*32+ BaseAdd;BaseAdd=0*/
+			/*由于担心8位单片机有乘法溢出问题，所以分三部取地址*/
+//			text[i] = 0XA3;
+//			text[i+1] = text[i+1] - 0x20 + 0xA0;
+			fontaddr = (texttemp[i]- 0xa1)*94; 
+			fontaddr += (texttemp[i+1]-0xa1);
+			fontaddr = (ulong)(fontaddr*32);
+			
+			addrHigh = (fontaddr&0xff0000)>>16;  /*地址的高8位,共24位*/
+			addrMid = (fontaddr&0xff00)>>8;      /*地址的中8位,共24位*/
+			addrLow = fontaddr&0xff;	     /*地址的低8位,共24位*/
+			get_n_bytes_data_from_ROM(addrHigh,addrMid,addrLow,fontbuf,32 );/*取32个字节的数据，存到"fontbuf[32]"*/
+			display_graphic_16x16(y,x,fontbuf);/*显示汉字到LCD上，y为页地址，x为列地址，fontbuf[]为数据*/
+			x+=16;
+		}
+}
 //=============================================================================
 //函数名称:Execute_Host_Comm
 //功能概要:执行上位机发出的命令
