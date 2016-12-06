@@ -44,7 +44,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\OBJ\</OutputDirectory>
-          <OutputName>RDID_control</OutputName>
+          <OutputName>oled_control</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -438,9 +438,9 @@
               <FilePath>..\USER\communication.c</FilePath>
             </File>
             <File>
-              <FileName>LOCK.C</FileName>
+              <FileName>LCD_ZK.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\LOCK.C</FilePath>
+              <FilePath>..\USER\LCD_ZK.c</FilePath>
             </File>
           </Files>
         </Group>
