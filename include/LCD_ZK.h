@@ -69,7 +69,7 @@
 #define   LCD_RST(N) 	 				{if(N==1){GPIO_SetBits(LCD_RST_PORT, LCD_RST_IO);}else{GPIO_ResetBits(LCD_RST_PORT, LCD_RST_IO);}}
 #define   LCD_DC(N) 	 				{if(N==1){GPIO_SetBits(LCD_DC_PORT, LCD_DC_IO);}else{GPIO_ResetBits(LCD_DC_PORT, LCD_DC_IO);}}
 
-#if 1
+#if 0
 //带参宏，可以像内联函数一样使用
 #define lcd_cs1(a)	if (a)	\
 					GPIO_SetBits(LCD_CS_PORT,LCD_CS_IO);\

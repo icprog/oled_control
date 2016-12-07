@@ -83,12 +83,16 @@ static  void func01(u8 x,u8 y,u8 length,u8 *p)
 		LCD_P8x16Showchar(x+i*8,y,*p++);
 	}
 }
+
+
 static  void func02(u8 x,u8 y,u8 length,u8 *text)
 {
 	uchar i,tempx,tempy,templength;
 	uchar addrHigh,addrMid,addrLow ;
 	uchar fontbuf[32];
 	ulong  fontaddr=0;
+	x=x*16;	//处理行，文字只能显示4行
+	y=y*2; //处理列，文字只能显示8列
 	tempy = y;
 	templength = 0;
 	if(x+length*8 > 128)
@@ -103,12 +107,12 @@ static  void func02(u8 x,u8 y,u8 length,u8 *text)
 		}
 		tempy += 2;
 	}
-	for(i=0;i<(length - templength)/2;i=i+2){
+	for(i=0;i<(length - templength)/2;i++){
 			/*国标简体（GB2312）汉字在晶联讯字库IC中的地址由以下公式来计算：*/
 		/*Address = ((MSB - 0xB0) * 94 + (LSB - 0xA1)+ 846)*32+ BaseAdd;BaseAdd=0*/
 		/*由于担心8位单片机有乘法溢出问题，所以分三部取地址*/
-		fontaddr = (text[i]- 0xb0)*94; 
-		fontaddr += (text[i+1]-0xa1)+846;
+		fontaddr = (text[i*2]- 0xb0)*94; 
+		fontaddr += (text[i*2+1]-0xa1)+846;
 		fontaddr = (ulong)(fontaddr*32);
 		
 		addrHigh = (fontaddr&0xff0000)>>16;  /*地址的高8位,共24位*/
@@ -187,8 +191,12 @@ void  Execute_Host_Comm(void)
 		case 0x02:
 			func02(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,(u8)(MCU_Host_Rec.control.datasizeL-2),&MCU_Host_Rec.control.recbuf[0]);
 		break;
-		case 0x03:break;
-		case 0x04:break;
+		case 0x03:
+			func03(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,(u8)(MCU_Host_Rec.control.datasizeL-2),&MCU_Host_Rec.control.recbuf[0]);
+		break;
+		case 0x04:
+			display_128x64(bmp1);
+		break;
 		case 0x05:break;
 		case 0x06:
 					clear_screen();    //clear all dots 

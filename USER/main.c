@@ -29,6 +29,7 @@ int main(void)
 		delay_ms(100);
     while(1){
 			Execute_Host_Comm();
+			
 		}       
 }
 

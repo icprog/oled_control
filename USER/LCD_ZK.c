@@ -255,7 +255,7 @@ void GBZK_ROMOUTRESET(void)
 
 static void OLED_GPIO_Config(void)
 {
-	#if 1
+	#if 0
 	OLED_GPIO_Config1();
 	#else
 	GBZK_GPIO_Config();
@@ -327,7 +327,6 @@ void waitkey()
 /*LCDÄ£¿é³õÊ¼»¯*/
 void initial_lcd()
 {delay(400);
-	//OLED_GPIO_Config();
 	OLED_GPIO_Config();
 	lcd_cs1(0);
 	Rom_CS(1);
