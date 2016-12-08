@@ -142,6 +142,7 @@
 #endif					
 					
 extern unsigned char const bmp1[];
+extern unsigned char const bmp2[];
 extern unsigned char const jiong1[];
 extern unsigned char const lei1[];
 
@@ -179,5 +180,6 @@ void display_GB2312_string(unsigned char y,unsigned char x,unsigned char *text);
 void display_string_5x7(unsigned char y,unsigned char x,unsigned char *text);
 void LCD_P8x16Showchar(unsigned char x, unsigned char y,unsigned char dat);
 void LCD_P8x16Str(unsigned char x, unsigned char y,unsigned char ch[]);
+void display_bmp(u8 x,u8 y,u8 size_x,u8 size_y,const unsigned char *dp);
 
 #endif

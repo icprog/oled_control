@@ -17,7 +17,7 @@ static void Respond_Host_Comm(void)
 		if(Usart1_Control_Data.rx_count < 8){
 				return;
 		}
-		if(Usart1_Control_Data.rxbuf[2] != slaveaddr){
+		if((Usart1_Control_Data.rxbuf[2] != slaveaddr)||(Usart1_Control_Data.rxbuf[5] != Usart1_Control_Data.rx_count - 10)){
 				return ;
 		}
 		crc=CRC_GetCCITT(Usart1_Control_Data.rxbuf,Usart1_Control_Data.rx_count-4);
@@ -67,6 +67,8 @@ static void Respond_Host_Comm(void)
 static  void func01(u8 x,u8 y,u8 length,u8 *p)
 {//地址超过一行字符，只显示本行字符能显示的部分，超出部分忽略
 	u8 i,tempx,tempy,templength;
+	x=x*8;	//处理行，文字只能显示4行
+	y=y*2; //处理列，文字只能显示8列
 	tempy = y;
 	templength = 0;
 	if(x+length*8 > 128)
@@ -131,6 +133,8 @@ static  void func03(u8 x,u8 y,u8 length,u8 *text)
 		uchar fontbuf[32];
 	  u8 texttemp[16];
 		ulong  fontaddr=0;
+		x=x*16;	//处理行，文字只能显示4行
+	  y=y*2; //处理列，文字只能显示8列
 		tempy = y;
 		templength = 0;
 		length = length*2;
@@ -146,12 +150,12 @@ static  void func03(u8 x,u8 y,u8 length,u8 *text)
 			}
 			tempy += 2;
 		}
-		for(i=0;i<length*2;i++)
+		for(i=0;i<length;i++)
 		{
 				texttemp[i*2] = 0xA3;
 				texttemp[i*2+1] = text[i]- 0x20 + 0xA0;
 		}
-		for(i=0;i<(length - templength)/2;i=i+2){
+		for(i=0;i<(length - templength);i=i+2){
 			/*国标简体（GB2312）15x16点的字符在晶联讯字库IC中的地址由以下公式来计算：*/
 			/*Address = ((MSB - 0xa1) * 94 + (LSB - 0xA1))*32+ BaseAdd;BaseAdd=0*/
 			/*由于担心8位单片机有乘法溢出问题，所以分三部取地址*/
@@ -195,7 +199,7 @@ void  Execute_Host_Comm(void)
 			func03(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,(u8)(MCU_Host_Rec.control.datasizeL-2),&MCU_Host_Rec.control.recbuf[0]);
 		break;
 		case 0x04:
-			display_128x64(bmp1);
+		  display_bmp(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,MCU_Host_Rec.control.recbuf[0],MCU_Host_Rec.control.recbuf[1],bmp2);
 		break;
 		case 0x05:break;
 		case 0x06:
