@@ -13,6 +13,7 @@ static void Respond_Host_Comm(void)
 {
 		u8 i;
 		u16 crc;
+	  u8 res;
 		static u8 slaveaddr = 3;
 		if(Usart1_Control_Data.rx_count < 8){
 				return;
@@ -27,6 +28,7 @@ static void Respond_Host_Comm(void)
 					MCU_Host_Rec.rec_buf[i] = Usart1_Control_Data.rxbuf[i];
 			}//把数据复制给主机通讯结构体,数据正确，先回应主机，记录刷写OLED状态位
 			slave_rec_state = 1;	//从机接收数据正确
+			res = Execute_Host_Comm();  //执行完动作再回复PC，这样比较慢，但是可以给PC正确状态的答复
 			Usart1_Control_Data.tx_count = 0;	
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x01;
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x58;
@@ -34,7 +36,7 @@ static void Respond_Host_Comm(void)
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = MCU_Host_Rec.control.funcode;
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x00;
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x02;
-			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x01;	//数据接收正确
+			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = res;	//数据接收正确
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x00;
 			crc=CRC_GetCCITT(Usart1_Control_Data.txbuf,Usart1_Control_Data.tx_count);
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = (crc>>8)&0xFF; 
@@ -49,7 +51,7 @@ static void Respond_Host_Comm(void)
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = MCU_Host_Rec.control.funcode;
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x00;
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x02;
-			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x01;	//数据接收正确
+			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x00;	//数据接收正确
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x00;
 			crc=CRC_GetCCITT(Usart1_Control_Data.txbuf,Usart1_Control_Data.tx_count);
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = (crc>>8)&0xFF; 
@@ -64,9 +66,10 @@ static void Respond_Host_Comm(void)
 }
 
 //x是横坐标，共128个点，可写16个字符，y是纵坐标，共64个点，可写4行字符
-static  void func01(u8 x,u8 y,u8 length,u8 *p)
+static  u8 func01(u8 x,u8 y,u8 length,u8 *p)
 {//地址超过一行字符，只显示本行字符能显示的部分，超出部分忽略
 	u8 i,tempx,tempy,templength;
+	u8 res;
 	x=x*8;	//处理行，文字只能显示4行
 	y=y*2; //处理列，文字只能显示8列
 	tempy = y;
@@ -79,20 +82,25 @@ static  void func01(u8 x,u8 y,u8 length,u8 *p)
 			templength++;
 		}
 		tempy += 2;
+		res = 1;
+		return res; //超出地址范围不显示
 	}
 	for(i=0;i<length - templength;i++)
 	{
 		LCD_P8x16Showchar(x+i*8,y,*p++);
 	}
+	res = 0;
+	return res;
 }
 
 
-static  void func02(u8 x,u8 y,u8 length,u8 *text)
+static  u8 func02(u8 x,u8 y,u8 length,u8 *text)
 {
 	uchar i,tempx,tempy,templength;
 	uchar addrHigh,addrMid,addrLow ;
 	uchar fontbuf[32];
 	ulong  fontaddr=0;
+	u8 res;
 	x=x*16;	//处理行，文字只能显示4行
 	y=y*2; //处理列，文字只能显示8列
 	tempy = y;
@@ -108,6 +116,8 @@ static  void func02(u8 x,u8 y,u8 length,u8 *text)
 			templength++;	//文字是16个字符，减去的长度要是2的倍数
 		}
 		tempy += 2;
+		res = 1;
+		return res; //超出地址范围不显示
 	}
 	for(i=0;i<(length - templength)/2;i++){
 			/*国标简体（GB2312）汉字在晶联讯字库IC中的地址由以下公式来计算：*/
@@ -124,15 +134,18 @@ static  void func02(u8 x,u8 y,u8 length,u8 *text)
 		display_graphic_16x16(y,x,fontbuf);/*显示汉字到LCD上，y为页地址，x为列地址，fontbuf[]为数据*/
 		x+=16;
 	}
+	res = 0;
+	return res;
 }
 //主机发送数据必须使用A3+"字符"处理模式
-static  void func03(u8 x,u8 y,u8 length,u8 *text)
+static  u8 func03(u8 x,u8 y,u8 length,u8 *text)
 {
 		uchar i,tempx,tempy,templength;
 		uchar addrHigh,addrMid,addrLow ;
 		uchar fontbuf[32];
 	  u8 texttemp[16];
 		ulong  fontaddr=0;
+		u8 res;
 		x=x*16;	//处理行，文字只能显示4行
 	  y=y*2; //处理列，文字只能显示8列
 		tempy = y;
@@ -149,6 +162,8 @@ static  void func03(u8 x,u8 y,u8 length,u8 *text)
 				templength++;	//文字是16个字符，减去的长度要是2的倍数
 			}
 			tempy += 2;
+		res = 1;
+		return res; //超出地址范围不显示
 		}
 		for(i=0;i<length;i++)
 		{
@@ -172,6 +187,8 @@ static  void func03(u8 x,u8 y,u8 length,u8 *text)
 			display_graphic_16x16(y,x,fontbuf);/*显示汉字到LCD上，y为页地址，x为列地址，fontbuf[]为数据*/
 			x+=16;
 		}
+	res = 0;
+	return res;
 }
 //=============================================================================
 //函数名称:Execute_Host_Comm
@@ -180,39 +197,45 @@ static  void func03(u8 x,u8 y,u8 length,u8 *text)
 //函数返回:无
 //注意    :无
 //=============================================================================
-void  Execute_Host_Comm(void)
+u8  Execute_Host_Comm(void)
 {
-	if (1 == Usart1_Control_Data.rx_aframe){ 
-			Respond_Host_Comm();
-			Usart1_Control_Data.rx_count = 0;
-			Usart1_Control_Data.rx_aframe = 0;
-	}
+  u8 res;
 	if(slave_rec_state == 1){//执行主机发送的命令
 		switch(MCU_Host_Rec.control.funcode){
 		case 0x01:
-			func01(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,(u8)(MCU_Host_Rec.control.datasizeL-2),&MCU_Host_Rec.control.recbuf[0]);
+			res = func01(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,(u8)(MCU_Host_Rec.control.datasizeL-2),&MCU_Host_Rec.control.recbuf[0]);
 		break;
 		case 0x02:
-			func02(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,(u8)(MCU_Host_Rec.control.datasizeL-2),&MCU_Host_Rec.control.recbuf[0]);
+			res = func02(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,(u8)(MCU_Host_Rec.control.datasizeL-2),&MCU_Host_Rec.control.recbuf[0]);
 		break;
 		case 0x03:
-			func03(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,(u8)(MCU_Host_Rec.control.datasizeL-2),&MCU_Host_Rec.control.recbuf[0]);
+			res = func03(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,(u8)(MCU_Host_Rec.control.datasizeL-2),&MCU_Host_Rec.control.recbuf[0]);
 		break;
 		case 0x04:
 		  display_bmp(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,MCU_Host_Rec.control.recbuf[0],MCU_Host_Rec.control.recbuf[1],bmp2);
+		  res = 1;
 		break;
 		case 0x05:break;
 		case 0x06:
 					clear_screen();    //clear all dots 
+					res = 1;
 					break;
-		case 0x07:break;			
-		default: break;
+		case 0x07:res = 2;break;			
+		default: res = 2;break;
 		}
 		slave_rec_state = 0;
 	}
+	return res;
 }
 
-
+void Communication_Process(void )
+{
+		if (1 == Usart1_Control_Data.rx_aframe){ 
+			Respond_Host_Comm();
+			Usart1_Control_Data.rx_count = 0;
+			Usart1_Control_Data.rx_aframe = 0;
+		}
+}
 
 
 

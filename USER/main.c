@@ -28,7 +28,7 @@ int main(void)
 		display_GB2312_string(0,0,"ฮารว");
 		delay_ms(100);
     while(1){
-			Execute_Host_Comm();
+				Communication_Process();
 			
 		}       
 }
