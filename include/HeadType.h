@@ -42,7 +42,7 @@ typedef uint32	ulong;		/**< 32-bit value */
 #define TxBufMax 512
 
 /*自动成帧超时定时时间*/
-#define AUTO_FRAME_TIMEOUT1  50  //10*2ms
+#define AUTO_FRAME_TIMEOUT1  10  //10*2ms
 #define AUTO_FRAME_TIMEOUT2  10  //10*2ms
 #define AUTO_FRAME_TIMEOUT3  10  //10*2ms
 /*自动成帧超时定时时间*/

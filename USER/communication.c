@@ -1,5 +1,6 @@
 #include"HeadType.h"
 
+
 COMM_Rec_Union_Type  MCU_Host_Rec;//MCU作为主机时的结构体接收应答变量
 static u8 slave_rec_state;
 //=============================================================================
@@ -87,7 +88,12 @@ static  u8 func01(u8 x,u8 y,u8 length,u8 *p)
 	}
 	for(i=0;i<length - templength;i++)
 	{
-		LCD_P8x16Showchar(x+i*8,y,*p++);
+		if(*p == 0x00){
+
+		}else{
+			LCD_P8x16Showchar(x+i*8,y,*p);
+		}
+		p++;
 	}
 	res = 0;
 	return res;
@@ -123,15 +129,19 @@ static  u8 func02(u8 x,u8 y,u8 length,u8 *text)
 			/*国标简体（GB2312）汉字在晶联讯字库IC中的地址由以下公式来计算：*/
 		/*Address = ((MSB - 0xB0) * 94 + (LSB - 0xA1)+ 846)*32+ BaseAdd;BaseAdd=0*/
 		/*由于担心8位单片机有乘法溢出问题，所以分三部取地址*/
-		fontaddr = (text[i*2]- 0xb0)*94; 
-		fontaddr += (text[i*2+1]-0xa1)+846;
-		fontaddr = (ulong)(fontaddr*32);
-		
-		addrHigh = (fontaddr&0xff0000)>>16;  /*地址的高8位,共24位*/
-		addrMid = (fontaddr&0xff00)>>8;      /*地址的中8位,共24位*/
-		addrLow = fontaddr&0xff;	     /*地址的低8位,共24位*/
-		get_n_bytes_data_from_ROM(addrHigh,addrMid,addrLow,fontbuf,32 );/*取32个字节的数据，存到"fontbuf[32]"*/
-		display_graphic_16x16(y,x,fontbuf);/*显示汉字到LCD上，y为页地址，x为列地址，fontbuf[]为数据*/
+		if((text[i*2] == 0x00)&&(text[i*2+1] == 0x00)){
+
+		}else{
+			fontaddr = (text[i*2]- 0xb0)*94; 
+			fontaddr += (text[i*2+1]-0xa1)+846;
+			fontaddr = (ulong)(fontaddr*32);
+			
+			addrHigh = (fontaddr&0xff0000)>>16;  /*地址的高8位,共24位*/
+			addrMid = (fontaddr&0xff00)>>8;      /*地址的中8位,共24位*/
+			addrLow = fontaddr&0xff;	     /*地址的低8位,共24位*/
+			get_n_bytes_data_from_ROM(addrHigh,addrMid,addrLow,fontbuf,32 );/*取32个字节的数据，存到"fontbuf[32]"*/
+			display_graphic_16x16(y,x,fontbuf);/*显示汉字到LCD上，y为页地址，x为列地址，fontbuf[]为数据*/
+		}
 		x+=16;
 	}
 	res = 0;
@@ -167,8 +177,13 @@ static  u8 func03(u8 x,u8 y,u8 length,u8 *text)
 		}
 		for(i=0;i<length;i++)
 		{
-				texttemp[i*2] = 0xA3;
-				texttemp[i*2+1] = text[i]- 0x20 + 0xA0;
+			  if(text[i] == 0x00){
+					texttemp[i*2] = 0x00;
+					texttemp[i*2+1] = 0x00;
+				}else{
+					texttemp[i*2] = 0xA3;
+					texttemp[i*2+1] = text[i]- 0x20 + 0xA0;
+				}
 		}
 		for(i=0;i<(length - templength);i=i+2){
 			/*国标简体（GB2312）15x16点的字符在晶联讯字库IC中的地址由以下公式来计算：*/
@@ -176,15 +191,19 @@ static  u8 func03(u8 x,u8 y,u8 length,u8 *text)
 			/*由于担心8位单片机有乘法溢出问题，所以分三部取地址*/
 //			text[i] = 0XA3;
 //			text[i+1] = text[i+1] - 0x20 + 0xA0;
-			fontaddr = (texttemp[i]- 0xa1)*94; 
-			fontaddr += (texttemp[i+1]-0xa1);
-			fontaddr = (ulong)(fontaddr*32);
+			if((texttemp[i] == 0x00)&&(texttemp[i+1] == 0x00)){
 			
-			addrHigh = (fontaddr&0xff0000)>>16;  /*地址的高8位,共24位*/
-			addrMid = (fontaddr&0xff00)>>8;      /*地址的中8位,共24位*/
-			addrLow = fontaddr&0xff;	     /*地址的低8位,共24位*/
-			get_n_bytes_data_from_ROM(addrHigh,addrMid,addrLow,fontbuf,32 );/*取32个字节的数据，存到"fontbuf[32]"*/
-			display_graphic_16x16(y,x,fontbuf);/*显示汉字到LCD上，y为页地址，x为列地址，fontbuf[]为数据*/
+			}else{
+				fontaddr = (texttemp[i]- 0xa1)*94; 
+				fontaddr += (texttemp[i+1]-0xa1);
+				fontaddr = (ulong)(fontaddr*32);
+				
+				addrHigh = (fontaddr&0xff0000)>>16;  /*地址的高8位,共24位*/
+				addrMid = (fontaddr&0xff00)>>8;      /*地址的中8位,共24位*/
+				addrLow = fontaddr&0xff;	     /*地址的低8位,共24位*/
+				get_n_bytes_data_from_ROM(addrHigh,addrMid,addrLow,fontbuf,32 );/*取32个字节的数据，存到"fontbuf[32]"*/
+				display_graphic_16x16(y,x,fontbuf);/*显示汉字到LCD上，y为页地址，x为列地址，fontbuf[]为数据*/
+			}
 			x+=16;
 		}
 	res = 0;
@@ -213,6 +232,7 @@ u8  Execute_Host_Comm(void)
 		break;
 		case 0x04:
 		  display_bmp(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,MCU_Host_Rec.control.recbuf[0],MCU_Host_Rec.control.recbuf[1],bmp2);
+		  //display_bmp(MCU_Host_Rec.control.x,MCU_Host_Rec.control.y,54,16,bmp3);
 		  res = 1;
 		break;
 		case 0x05:break;

@@ -25,11 +25,10 @@ int main(void)
 		clear_screen();    //clear all dots 
 		display_128x64(bmp1);
 		clear_screen();    //clear all dots 
-		display_GB2312_string(0,0,"ฮารว");
+		display_bmp(0,0,56,16,bmp3);	  
 		delay_ms(100);
     while(1){
 				Communication_Process();
-			
 		}       
 }
 
