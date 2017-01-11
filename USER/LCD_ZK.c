@@ -130,10 +130,6 @@ static void GBZK_GPIO_Config(void);
 
 
 
-
-
-
-
 static void GBZK_GPIO_Config(void)
 {		
 	/*定义一个GPIO_InitTypeDef类型的结构体*/
@@ -189,6 +185,13 @@ static void GBZK_GPIO_Config(void)
 static void OLED_GPIO_Config1(void)
 {	
 	GPIO_InitTypeDef  GPIO_InitStructure;
+		//LCD_CS输出信号
+	RCC_APB2PeriphClockCmd(LCD_CS_RCC,ENABLE);
+	GPIO_InitStructure.GPIO_Pin = LCD_CS_IO;			 
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+	GPIO_Init(LCD_CS_PORT, &GPIO_InitStructure);
+	
 	//LCD_SCL输出信号
 	RCC_APB2PeriphClockCmd(LCD_SCLK_RCC,ENABLE);
 	GPIO_InitStructure.GPIO_Pin = LCD_SCLK_IO;			 
@@ -216,6 +219,21 @@ static void OLED_GPIO_Config1(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
 	GPIO_Init(LCD_DC_PORT, &GPIO_InitStructure);
+	
+			//ROM_CS输出信号
+	RCC_APB2PeriphClockCmd(ROM_CS_RCC,ENABLE);
+	GPIO_InitStructure.GPIO_Pin = ROM_CS_IO;			 
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+	GPIO_Init(ROM_CS_PORT, &GPIO_InitStructure);
+	
+			//ROM_OUT输出信号
+	RCC_APB2PeriphClockCmd(ROM_OUT_RCC,ENABLE);
+	GPIO_InitStructure.GPIO_Pin = ROM_OUT_IO;			 
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+	GPIO_Init(ROM_OUT_PORT, &GPIO_InitStructure);
+	
 }
 
 void GBZK_ROMOUTSET(void)
@@ -256,7 +274,7 @@ void GBZK_ROMOUTRESET(void)
 
 static void OLED_GPIO_Config(void)
 {
-	#if 0
+	#if 1
 	OLED_GPIO_Config1();
 	#else
 	GBZK_GPIO_Config();
