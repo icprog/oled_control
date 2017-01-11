@@ -255,10 +255,13 @@ void Communication_Process(void )
 			Usart1_Control_Data.rx_count = 0;
 			Usart1_Control_Data.rx_aframe = 0;
 		}
-//		func02(0,0,16,"韦乐海茨医药设备");
-//		func02(0,1,16,"韦乐海茨医药设备");
-//		func02(0,2,16,"韦乐海茨医药设备");
-//		func02(0,3,16,"韦乐海茨医药设备");
+		func02(0,0,16,"韦乐海茨医药设备");
+		func02(0,1,16,"韦乐海茨医药设备");
+		func02(0,2,16,"韦乐海茨医药设备");
+		func02(0,3,16,"韦乐海茨医药设备");
+		delay_ms(1000);
+		clear_screen();
+		delay_ms(1000);
 }
 
 

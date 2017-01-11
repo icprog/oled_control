@@ -352,7 +352,8 @@ void initial_lcd()
   LCD_SCLK(1);
   LCD_RST(0);
   delay_ms(50);
-  LCD_RST(1);      //从上电到下面开始初始化要有足够的时间，即等待RC复位完毕      
+  LCD_RST(1);      //从上电到下面开始初始化要有足够的时间，即等待RC复位完毕  
+#if 1	
 	transfer_command_lcd(0xAE);   //display off
 	transfer_command_lcd(0x20);	//Set Memory Addressing Mode	
 	transfer_command_lcd(0x10);	//00,Horizontal Addressing Mode;01,Vertical Addressing Mode;10,Page Addressing Mode (RESET);11,Invalid
@@ -381,6 +382,38 @@ void initial_lcd()
 	transfer_command_lcd(0x8d);//--set DC-DC enable
 	transfer_command_lcd(0x14);//
 	transfer_command_lcd(0xaf);//--turn on oled panel 
+#else
+	transfer_command_lcd(0xAE);//--turn off oled panel
+	transfer_command_lcd(0x02);//---set low column address
+	transfer_command_lcd(0x10);//---set high column address
+	transfer_command_lcd(0x40);//--set start line address  Set Mapping RAM Display Start Line (0x00~0x3F)
+	transfer_command_lcd(0x81);//--set contrast control register
+	transfer_command_lcd(0xCF); // Set SEG Output Current Brightness
+	transfer_command_lcd(0xA1);//--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
+	transfer_command_lcd(0xC8);//Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
+	transfer_command_lcd(0xA6);//--set normal display
+	transfer_command_lcd(0xA8);//--set multiplex ratio(1 to 64)
+	transfer_command_lcd(0x3f);//--1/64 duty
+	transfer_command_lcd(0xD3);//-set display offset	Shift Mapping RAM Counter (0x00~0x3F)
+	transfer_command_lcd(0x00);//-not offset
+	transfer_command_lcd(0xd5);//--set display clock divide ratio/oscillator frequency
+	transfer_command_lcd(0x80);//--set divide ratio, Set Clock as 100 Frames/Sec
+	transfer_command_lcd(0xD9);//--set pre-charge period
+	transfer_command_lcd(0xF1);//Set Pre-Charge as 15 Clocks & Discharge as 1 Clock
+	transfer_command_lcd(0xDA);//--set com pins hardware configuration
+	transfer_command_lcd(0x12);
+	transfer_command_lcd(0xDB);//--set vcomh
+	transfer_command_lcd(0x40);//Set VCOM Deselect Level
+	transfer_command_lcd(0x20);//-Set Page Addressing Mode (0x00/0x01/0x02)
+	transfer_command_lcd(0x02);//
+	transfer_command_lcd(0x8D);//--set Charge Pump enable/disable
+	transfer_command_lcd(0x14);//--set(0x10) disable
+	transfer_command_lcd(0xA4);// Disable Entire Display On (0xa4/0xa5)
+	transfer_command_lcd(0xA6);// Disable Inverse Display On (0xa6/a7) 
+	transfer_command_lcd(0xAF);//--turn on oled panel
+	
+	transfer_command_lcd(0xAF); /*display ON*/ 
+#endif
 	lcd_cs1(1);
 }
 
@@ -401,7 +434,11 @@ void clear_screen()
 	for(i=0;i<8;i++)
 	{
 		transfer_command_lcd(0xb0+i);
+#if 0
 		transfer_command_lcd(0x00);
+#else
+		transfer_command_lcd(0x02);
+#endif
 		transfer_command_lcd(0x10);
 		for(j=0;j<128;j++)
 		{
