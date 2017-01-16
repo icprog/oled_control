@@ -16,6 +16,7 @@ void delay_ms1(u16 ms)
 int main(void)
 {
 		delay_init();
+		AT24CXX_Init();
 		initial_lcd();
 		USART1_Config();
 		LED_GPIO_Config();

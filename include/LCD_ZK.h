@@ -47,7 +47,7 @@
 #define		LCD_SDA_IO					GPIO_Pin_15					 //SDA   D1（MOSI） 数据
 #define		LCD_SDA_PORT				GPIOB
 #define   LCD_SDA_RCC					RCC_APB2Periph_GPIOB
-#define		LCD_RST_IO					GPIO_Pin_9					//_RES  hardware reset   复位 
+#define		LCD_RST_IO					GPIO_Pin_10					//_RES  hardware reset   复位 
 #define		LCD_RST_PORT				GPIOB
 #define   LCD_RST_RCC					RCC_APB2Periph_GPIOB
 #define		LCD_DC_IO						GPIO_Pin_11				 //A0  H/L 命令数据选通端，H：数据，L:命令
@@ -57,12 +57,12 @@
 #define		LCD_CS_PORT					GPIOB
 #define   LCD_CS_RCC					RCC_APB2Periph_GPIOB
 
-#define		ROM_CS_IO						GPIO_Pin_10				 //rom片选信号
-#define		ROM_CS_PORT					GPIOB
-#define   ROM_CS_RCC					RCC_APB2Periph_GPIOB
-#define		ROM_OUT_IO					GPIO_Pin_14				 //
-#define		ROM_OUT_PORT				GPIOB
-#define   ROM_OUT_RCC					RCC_APB2Periph_GPIOB
+#define		ROM_CS_IO						GPIO_Pin_5				 //rom片选信号
+#define		ROM_CS_PORT					GPIOA
+#define   ROM_CS_RCC					RCC_APB2Periph_GPIOA
+#define		ROM_OUT_IO					GPIO_Pin_4				 //
+#define		ROM_OUT_PORT				GPIOA
+#define   ROM_OUT_RCC					RCC_APB2Periph_GPIOA
 
 #define   LCD_SCLK(N) 	 			{if(N==1){GPIO_SetBits(LCD_SCLK_PORT, LCD_SCLK_IO);}else{GPIO_ResetBits(LCD_SCLK_PORT, LCD_SCLK_IO);}}
 #define   LCD_SDA(N) 	 				{if(N==1){GPIO_SetBits(LCD_SDA_PORT, LCD_SDA_IO);}else{GPIO_ResetBits(LCD_SDA_PORT, LCD_SDA_IO);}}

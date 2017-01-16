@@ -351,7 +351,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\BSP\EXTI;..\include;..\Libraries\CMSIS;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\USER;..\USER\delay;..\USER\led</IncludePath>
+              <IncludePath>..\BSP\EXTI;..\include;..\Libraries\CMSIS;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\USER;..\USER\delay;..\USER\led;..\USER\IIC</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -441,6 +441,11 @@
               <FileName>LCD_ZK.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER\LCD_ZK.c</FilePath>
+            </File>
+            <File>
+              <FileName>24cxx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\24cxx.c</FilePath>
             </File>
           </Files>
         </Group>

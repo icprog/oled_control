@@ -11,7 +11,7 @@
 #include "TIM.h"
 #include "communication.h"
 #include "LCD_ZK.H"
-
+#include "24cxx.h" 
 
 /*************Typedef datatype start*******************/
 typedef char int8;

@@ -1,7 +1,7 @@
 #include"HeadType.h"	
 
-#define	DEVICE1_KEY_IO					GPIO_Pin_14
-#define	DEVICE1_KEY_PORT				GPIOB
+#define	DEVICE1_KEY_IO					GPIO_Pin_3
+#define	DEVICE1_KEY_PORT				GPIOA
 
 #define READ_DEVICE1_KEY    		GPIO_ReadInputDataBit(DEVICE1_KEY_PORT,DEVICE1_KEY_IO) //返回的是一个字节，读的是一个位
 
@@ -22,7 +22,7 @@ void KEY_GPIO_Config(void)
 	//定义一个GPIO_InitTypeDef 类型的结构体，名字叫GPIO_InitStructure 
 	GPIO_InitTypeDef  GPIO_InitStructure;
 	//使能GPIOC的外设时钟
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
 	//选择要用的GPIO引脚		
 	GPIO_InitStructure.GPIO_Pin = DEVICE1_KEY_IO;
 	///设置引脚模式为推免输出模式			 

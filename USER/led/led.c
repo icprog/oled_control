@@ -20,7 +20,7 @@ void LED_GPIO_Config(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
 
 	//选择要用的GPIO引脚		
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_11;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_2;
 	///设置引脚模式为推免输出模式			 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 
 	//设置引脚速度为50MHZ
