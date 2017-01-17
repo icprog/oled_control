@@ -192,7 +192,7 @@ void dispose_menu(void)
 			display_GB2312_string(0,16,"地址设置错误");
 			display_GB2312_string(2,16,"当前地址:0");
 			display_GB2312_string(4,8,"该地址设备异常");
-			display_GB2312_string(6,16+8,"0<地址<128");
+			display_GB2312_string(6,16,"1<=地址<=128");
 		}
 		Menu = MENU_END;
 		break;

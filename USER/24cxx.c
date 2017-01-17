@@ -216,7 +216,7 @@ void AT24CXX_Init(void)
 					display_GB2312_string(0,8,"请设置设备地址");
 					display_GB2312_string(2,16,"当前地址:0");
 					display_GB2312_string(4,8,"该地址设备异常");
-					display_GB2312_string(6,16+8,"0<地址<128");
+					display_GB2312_string(6,16,"1<=地址<=128");
 					slaveaddr = 0;
 					delay_ms(1500);
 					delay_ms(1500);
@@ -226,7 +226,7 @@ void AT24CXX_Init(void)
 					display_GB2312_string(0,8,"请设置设备地址");
 					display_GB2312_string(2,16,"当前地址:0");
 					display_GB2312_string(4,8,"该地址设备异常");
-					display_GB2312_string(6,16+8,"0<地址<128");
+					display_GB2312_string(6,16,"1<=地址<=128");
 					slaveaddr = 0;
 					delay_ms(1500);
 					delay_ms(1500);
