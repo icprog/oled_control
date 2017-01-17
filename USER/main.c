@@ -16,20 +16,23 @@ void delay_ms1(u16 ms)
 int main(void)
 {
 		delay_init();
-		AT24CXX_Init();
 		initial_lcd();
+		clear_screen(0x00);    //clear all dots
+		AT24CXX_Init();
 		USART1_Config();
 		LED_GPIO_Config();
 		KEY_GPIO_Config();
     TIM2_Config();
     TIM3_Config();
-		clear_screen();    //clear all dots 
-		display_128x64(bmp1);
-		clear_screen();    //clear all dots 
-//		display_bmp(0,0,56,16,bmp3);	  
 		delay_ms(100);
     while(1){
-				Communication_Process();
+			  dispose_key();
+				if(Key_SetParamFlag == 0){
+					Communication_Process();
+				}else{
+					dispose_menu();
+				}
+
 		}       
 }
 

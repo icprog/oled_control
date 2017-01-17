@@ -1,4 +1,5 @@
 #include "24cxx.h" 
+#include"HeadType.h"	
 // #include "delay.h"
 // #include "sys.h"
 
@@ -201,8 +202,36 @@ u8 I2C_Read_Byte(u8 ack)
 //初始化IIC接口
 void AT24CXX_Init(void)
 {
+	  u8 addrtemp1,addrtemp2;
     I2C_INIT();		 //IIC初始化
     delay_nms(4);
+		if(AT24CXX_Check()){
+				addrtemp1 = AT24CXX_ReadOneByte(0x00);
+			  addrtemp2 = AT24CXX_ReadOneByte(0x01);
+			  if((addrtemp1 == addrtemp2)&&(addrtemp1 < 128)){
+					slaveaddr = addrtemp1;
+					clear_screen(0xFF);
+					AdrrOK_Flag = 1;
+				}else{
+					display_GB2312_string(0,8,"请设置设备地址");
+					display_GB2312_string(2,16,"当前地址:0");
+					display_GB2312_string(4,8,"该地址设备异常");
+					display_GB2312_string(6,16+8,"0<地址<128");
+					slaveaddr = 0;
+					delay_ms(1500);
+					delay_ms(1500);
+					delay_ms(1500);
+				}
+		}else{
+					display_GB2312_string(0,8,"请设置设备地址");
+					display_GB2312_string(2,16,"当前地址:0");
+					display_GB2312_string(4,8,"该地址设备异常");
+					display_GB2312_string(6,16+8,"0<地址<128");
+					slaveaddr = 0;
+					delay_ms(1500);
+					delay_ms(1500);
+					delay_ms(1500);
+		}
 }
 
 /*******************************************************************************
@@ -327,11 +356,12 @@ u8 AT24CXX_Check(void)
 	u8 temp;
     
 	temp=AT24CXX_ReadOneByte(255);//避免每次开机都写AT24CXX			   
-	if(temp==0X55)return 0;		   
-	else//排除第一次初始化的情况
+	if(temp==0X55){
+		return 0;
+	}else//排除第一次初始化的情况
 	{
 		AT24CXX_WriteOneByte(255,0X55);
-	    temp=AT24CXX_ReadOneByte(255);	  
+	  temp=AT24CXX_ReadOneByte(255);	  
 		if(temp==0X55)return 0;
 	}
 	return 1;											  

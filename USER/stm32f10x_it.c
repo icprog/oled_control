@@ -149,10 +149,16 @@ void TIM2_IRQHandler(void)
 	if ( TIM_GetITStatus(TIM2 , TIM_IT_Update) != RESET ) 
 	{	
 		Led_Flash();
-//		key=Key_Scan();
+		key=Key_Scan();
 		if(key >0){
 			Key_ScanNum = key;
 			key = 0;
+		}
+		if(timeflag >0){
+				timeflag--;
+		}
+		if(Menu_Exit_Time > 0){
+			Menu_Exit_Time--;
 		}
 		TIM_ClearITPendingBit(TIM2 , TIM_FLAG_Update);  		 
 	}		 	

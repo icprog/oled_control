@@ -274,7 +274,7 @@ void GBZK_ROMOUTRESET(void)
 
 static void OLED_GPIO_Config(void)
 {
-	#if 1
+	#if selectboard
 	OLED_GPIO_Config1();
 	#else
 	GBZK_GPIO_Config();
@@ -426,7 +426,7 @@ void lcd_address(uchar page,uchar column)
 }
 
 /*È«ÆÁÇåÆÁ*/
-void clear_screen()
+void clear_screen(u8 dat)
 {
 	unsigned char i,j;
 	lcd_cs1(0);
@@ -442,7 +442,7 @@ void clear_screen()
 		transfer_command_lcd(0x10);
 		for(j=0;j<128;j++)
 		{
-		  	transfer_data_lcd(0x00);
+		  	transfer_data_lcd(dat);
 		}
 	}
  	lcd_cs1(1);

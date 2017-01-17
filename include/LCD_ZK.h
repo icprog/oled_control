@@ -71,7 +71,7 @@
 #define   ROM_CS(N) 	 				{if(N==1){GPIO_SetBits(ROM_CS_PORT, ROM_CS_IO);}else{GPIO_ResetBits(ROM_CS_PORT, ROM_CS_IO);}}
 #define   ROM_OUTPUT(N) 	 		{if(N==1){GPIO_SetBits(ROM_OUT_PORT, ROM_OUT_IO);}else{GPIO_ResetBits(ROM_OUT_PORT, ROM_OUT_IO);}}
 
-#if 1
+#if selectboard
 //带参宏，可以像内联函数一样使用
 #define lcd_cs1(a)	if (a)	\
 					GPIO_SetBits(LCD_CS_PORT,LCD_CS_IO);\
@@ -162,7 +162,8 @@ void delay(int n_ms);
 void initial_lcd(void);
 void lcd_address(unsigned char page,unsigned char column);
 /*全屏清屏*/
-void clear_screen(void);
+//void clear_screen(void);
+void clear_screen(u8 dat);
 /*显示128x64点阵图像*/
 void display_128x64(const unsigned char *dp);
 /*显示132x64点阵图像*/

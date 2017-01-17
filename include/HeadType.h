@@ -56,6 +56,8 @@ typedef uint32	ulong;		/**< 32-bit value */
 #define IRQ_TIMEOUT							4			//中断软件延时时间
 #define	MOTOR_START_DELAYTIME		40		//每个电机启动延时间隔
 
+#define selectboard		0
+#define MENU_EXIT_TIME 4000
 /*************define type end*******************/
 
 /*************union type start*******************/
@@ -102,6 +104,13 @@ typedef enum{
 	WORKEND,
 	END
 }CH_Work_Enum_Type;
+typedef enum{
+	MENU_RESERVE,
+	MENU_READPARAM,
+	MENU_SETPARAM,
+	MENU_SAVEPARAM,
+	MENU_END
+}Menu_Option;
 /*************enum type end*******************/
 
 /*************struct type start*******************/
@@ -233,6 +242,10 @@ extern	Belt_Work_Type belt12;
 extern u8 Key_ScanNum;
 extern RFID_REC_Type Usart2_RFIDRec;
 extern RFID_REC_Type Usart3_RFIDRec;
+extern u8 Key_SetParamFlag;
+extern  u16  timeflag;
+extern u8 AdrrOK_Flag;
+extern u16  Menu_Exit_Time;
 
 /*************extern variable end*******************/
 
@@ -242,8 +255,8 @@ u16 CRC_GetCCITT(u8 *pdata, int len);
 u8 Key_Scan(void);
 void KEY_GPIO_Config(void);
 u16 switch_init_time(void);
-
-
+void dispose_key(void );
+void dispose_menu(void);
 /*************function end*******************/
 #endif
 

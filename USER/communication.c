@@ -3,6 +3,7 @@
 
 COMM_Rec_Union_Type  MCU_Host_Rec;//MCU作为主机时的结构体接收应答变量
 static u8 slave_rec_state;
+u8 slaveaddr = 3;
 //=============================================================================
 //函数名称:Respond_Host_Comm
 //功能概要:响应上位机的发出的数据命令，数据已经从串口一接收完整
@@ -15,7 +16,6 @@ static void Respond_Host_Comm(void)
 		u8 i;
 		u16 crc;
 	  u8 res;
-		static u8 slaveaddr = 3;
 		if(Usart1_Control_Data.rx_count < 8){
 				return;
 		}
@@ -28,8 +28,12 @@ static void Respond_Host_Comm(void)
 			for(i = 0;i < Usart1_Control_Data.rx_count;i++){
 					MCU_Host_Rec.rec_buf[i] = Usart1_Control_Data.rxbuf[i];
 			}//把数据复制给主机通讯结构体,数据正确，先回应主机，记录刷写OLED状态位
+			if(AdrrOK_Flag == 1){//开机地址检查正确和修改地址保存正确后点亮屏幕提示设备OK，当第一次通讯正确后熄灭屏幕显示上位机信息
+				clear_screen(0x00);
+				AdrrOK_Flag = 0;
+			}
 			slave_rec_state = 1;	//从机接收数据正确
-			res = Execute_Host_Comm();  //执行完动作再回复PC，这样比较慢，但是可以给PC正确状态的答复
+			res = Execute_Host_Comm();  //执行完动作再回复PC，这样比较慢，但是可以给PC正确状态的答复			
 			Usart1_Control_Data.tx_count = 0;	
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x01;
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x58;
@@ -237,7 +241,8 @@ u8  Execute_Host_Comm(void)
 		break;
 		case 0x05:break;
 		case 0x06:
-					clear_screen();    //clear all dots 
+					clear_screen(0XFF);    //clear all dots 
+					AdrrOK_Flag = 1; //上位机清屏相当于地址标志位正确，点亮屏幕提示，下次通讯时再显示响应信息
 					res = 1;
 					break;
 		case 0x07:res = 2;break;			
@@ -255,13 +260,20 @@ void Communication_Process(void )
 			Usart1_Control_Data.rx_count = 0;
 			Usart1_Control_Data.rx_aframe = 0;
 		}
-		func02(0,0,16,"韦乐海茨医药设备");
-		func02(0,1,16,"韦乐海茨医药设备");
-		func02(0,2,16,"韦乐海茨医药设备");
-		func02(0,3,16,"韦乐海茨医药设备");
-		delay_ms(1000);
-		clear_screen();
-		delay_ms(1000);
+//		if(Key_ScanNum == 0x01){
+//		func02(0,0,16,"韦乐海茨医药设备");
+//			Key_ScanNum = 0;
+//		}else if(Key_ScanNum == 0x11){
+//			func02(0,1,16,"韦乐海茨医药设备");
+//			Key_ScanNum = 0;
+//		}else if(Key_ScanNum == 0xff){
+//			func02(0,2,16,"韦乐海茨医药设备");
+//			func02(0,3,16,"韦乐海茨医药设备");
+//			Key_ScanNum = 0;
+//		}
+//		delay_ms(1000);
+//		clear_screen();
+//		delay_ms(1000);
 }
 
 
