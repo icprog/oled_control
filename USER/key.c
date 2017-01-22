@@ -21,6 +21,7 @@ Menu_Option Menu;
 u16  timeflag;
 u8   AdrrOK_Flag;
 u16  Menu_Exit_Time;
+u32 Menu_Valid_Time = MENU_VALID_TIME;
 //=============================================================================
 //函数名称: KEY_GPIO_Config
 //功能概要:LED灯引脚配置

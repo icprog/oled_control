@@ -220,6 +220,7 @@ void AT24CXX_Init(void)
 					slaveaddr = 0;
 					delay_ms(1500);
 					delay_ms(1500);
+					
 					delay_ms(1500);
 				}
 		}else{
