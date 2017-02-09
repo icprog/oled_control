@@ -190,6 +190,7 @@ void dispose_menu(void)
 					display_GB2312_string(6,8,"请更换存储芯片");
 				}
 		}else{
+			AT24CXX_WriteOneByte(0x00,slaveaddrtemp1);AT24CXX_WriteOneByte(0x01,slaveaddrtemp1);
 			display_GB2312_string(0,16,"地址设置错误");
 			display_GB2312_string(2,16,"当前地址:0");
 			display_GB2312_string(4,8,"该地址设备异常");

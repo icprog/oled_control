@@ -343,6 +343,7 @@ void waitkey()
 #endif
 
 
+
 /*LCDÄ£¿é³õÊ¼»¯*/
 void initial_lcd()
 {delay(400);

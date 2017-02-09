@@ -56,7 +56,7 @@ typedef uint32	ulong;		/**< 32-bit value */
 #define IRQ_TIMEOUT							4			//中断软件延时时间
 #define	MOTOR_START_DELAYTIME		40		//每个电机启动延时间隔
 
-#define selectboard		     	0
+#define selectboard		     	1
 #define MENU_EXIT_TIME 			4000
 #define MENU_VALID_TIME			12000
 /*************define type end*******************/

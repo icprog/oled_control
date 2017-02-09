@@ -205,7 +205,7 @@ void AT24CXX_Init(void)
 	  u8 addrtemp1,addrtemp2;
     I2C_INIT();		 //IIC≥ı ºªØ
     delay_nms(4);
-		if(AT24CXX_Check()){
+		if(0 == AT24CXX_Check()){
 				addrtemp1 = AT24CXX_ReadOneByte(0x00);
 			  addrtemp2 = AT24CXX_ReadOneByte(0x01);
 			  if((addrtemp1 == addrtemp2)&&(addrtemp1 < 128)){

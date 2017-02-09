@@ -23,8 +23,8 @@ int main(void)
 		LED_GPIO_Config();
 		KEY_GPIO_Config();
     TIM2_Config();
-    TIM3_Config();
-//		delay_ms(100);
+    TIM3_Config();	
+		delay_ms(100);
     while(1){
 			  dispose_key();
 				if(Key_SetParamFlag == 0){

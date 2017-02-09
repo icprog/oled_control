@@ -71,7 +71,8 @@
 #define   ROM_CS(N) 	 				{if(N==1){GPIO_SetBits(ROM_CS_PORT, ROM_CS_IO);}else{GPIO_ResetBits(ROM_CS_PORT, ROM_CS_IO);}}
 #define   ROM_OUTPUT(N) 	 		{if(N==1){GPIO_SetBits(ROM_OUT_PORT, ROM_OUT_IO);}else{GPIO_ResetBits(ROM_OUT_PORT, ROM_OUT_IO);}}
 
-#if selectboard
+#if 1
+
 //带参宏，可以像内联函数一样使用
 #define lcd_cs1(a)	if (a)	\
 					GPIO_SetBits(LCD_CS_PORT,LCD_CS_IO);\
@@ -143,7 +144,7 @@
 					GPIO_ResetBits(GPIOA,GPIO_Pin_4)				
 
 #define ROM_OUT    GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_4)
-#endif					
+#endif						
 					
 extern unsigned char const bmp1[];
 extern unsigned char const bmp2[];
