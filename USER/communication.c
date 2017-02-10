@@ -33,7 +33,8 @@ static void Respond_Host_Comm(void)
 				AdrrOK_Flag = 0;
 			}
 			slave_rec_state = 1;	//从机接收数据正确
-			res = Execute_Host_Comm();  //执行完动作再回复PC，这样比较慢，但是可以给PC正确状态的答复			
+			res = Execute_Host_Comm();  //执行完动作再回复PC，这样比较慢，但是可以给PC正确状态的答复		
+			RE485_SEND;
 			Usart1_Control_Data.tx_count = 0;	
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x01;
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x58;
@@ -49,6 +50,7 @@ static void Respond_Host_Comm(void)
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0X0D;
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0X0A;
 		}else{	//CRC错误
+			RE485_SEND;
 			Usart1_Control_Data.tx_count = 0;	
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x01;
 			Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_count++] = 0x58;

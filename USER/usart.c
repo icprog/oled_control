@@ -11,7 +11,23 @@ char Auto_Frame_Time1;
 char Auto_Frame_Time2;
 char Auto_Frame_Time3;
 
+static void RE485_GPIO_Config(void)
+{
+	//定义一个GPIO_InitTypeDef 类型的结构体，名字叫GPIO_InitStructure 
+	GPIO_InitTypeDef  GPIO_InitStructure;
+	//使能GPIOC的外设时钟
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
 
+	//选择要用的GPIO引脚		
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+	///设置引脚模式为推免输出模式			 
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 
+	//设置引脚速度为50MHZ
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+	//调用库函数，初始化GPIO
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+  
+}
 
 //=============================================================================
 //函数名称:Init_USART1
@@ -27,7 +43,8 @@ static void Init_USART1(void)
     Usart1_Control_Data.rx_count = 0;
     Usart1_Control_Data.rx_start = 0;
     Usart1_Control_Data.rx_aframe = 0;
-    
+    RE485_GPIO_Config();
+		RE485_REC;
 }
 //=============================================================================
 //函数名称:Init_USART2
@@ -405,6 +422,7 @@ void USART1_Do_Tx(void )
 	}else{
        Usart1_Control_Data.tx_count = 0; 
        Usart1_Control_Data.tx_index = 0;
+			 RE485_REC;
     }
 }
 //=============================================================================
@@ -421,7 +439,7 @@ void USART2_Do_Tx(void )
 		Usart2_Control_Data.tx_index++;
 	}else{
        Usart2_Control_Data.tx_count = 0; 
-       Usart2_Control_Data.tx_index = 0;	   
+       Usart2_Control_Data.tx_index = 0;		
     }
 }
 //=============================================================================

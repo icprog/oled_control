@@ -4,6 +4,11 @@
 #include "stm32f10x.h"
 #include "stdio.h"
 
+#define       RE485_SEND    	  GPIO_SetBits(GPIOA, GPIO_Pin_11)
+#define       RE485_REC  				GPIO_ResetBits(GPIOA, GPIO_Pin_11)
+
+
+
 void USART1_IRQHandler(void);	
 int fputc(int ch, FILE *f);
 void USART1_Putc(unsigned char c);
